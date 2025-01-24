@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+/openai-assistant/venv
+/openai-assistant/.env
 
 # testing
 /coverage
