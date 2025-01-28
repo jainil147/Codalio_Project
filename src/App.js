@@ -1,7 +1,9 @@
 import React from "react";
 import "./styles.css";
 import styled from "styled-components";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Ensure these imports
 import AccountBox from "./components/accountBox/index";
+import { Dashboard } from "./components/dashbaord"; // Replace with correct path
 
 const AppContainer = styled.div`
   width: 100%;
@@ -13,7 +15,13 @@ const AppContainer = styled.div`
 `;
 
 export default function App() {
-  return <AppContainer>
-    <AccountBox />
-  </AppContainer>
+  return (
+    <Router>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path = "/signup" element ={<AppContainer><AccountBox /> </AppContainer>} />
+      </Routes>
+
+    </Router>
+  );
 }
