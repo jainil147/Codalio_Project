@@ -11,7 +11,7 @@ const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: c cvbcvbenter;
+  justify-content: center;
 `;
 
 export default function App() {
@@ -19,7 +19,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path = "/signup" element ={<AppContainer><AccountBox /> </AppContainer>} />
+        <Route path = "/" element ={<AppContainer><AccountBox /></AppContainer>} />
       </Routes>
 
     </Router>
