@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   BoldLink,
   BoxContainer,
@@ -10,11 +10,20 @@ import {
 import { Marginer } from "../marginer";
 import { AccountContext } from "./AccountContext";
 import { register } from "../../services/auth";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
+import { useNavigate } from "react-router-dom"; 
 
-export function SignupForm(props) {
+
+export function SignupForm() {
   const { switchToSignin } = useContext(AccountContext);
-  const navigate = useNavigate(); // Use navigate instead of history
+  const navigate = useNavigate(); 
+
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -33,8 +42,9 @@ export function SignupForm(props) {
 
     try {
       const response = await register(name, email, password);
-      console.log(response)
+  
       setMessage(response.message);
+      localStorage.setItem("user", JSON.stringify(response.user)); // Store user details
       navigate("/dashboard", { state: { userDetails: response.user } });
     } catch (error) {
       setError(error.response.data.error || "Registration failed.");
