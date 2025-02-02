@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token
 from flask_bcrypt import Bcrypt
@@ -6,6 +6,8 @@ import mysql.connector
 from dotenv import load_dotenv
 import os
 import secrets
+from flask import Flask, request, jsonify, session, redirect, url_for
+
 
 # Load environment variables
 load_dotenv()
@@ -85,6 +87,7 @@ def register():
 
 # User Login
 @app.route('/api/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
     email = data.get("email")
@@ -93,14 +96,33 @@ def login():
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400
 
+    # Fetch user from the database by email
     cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
-    user = cursor.fetchone()  # Fetch a single user (as a dictionary)
+    user = cursor.fetchone()  # Fetch a single user as a dictionary
 
-    if user and bcrypt.check_password_hash(user["password"], password):  # user["password"] works here
+    # Validate user credentials
+    if user and bcrypt.check_password_hash(user["password"], password):
+        # Generate JWT token
         access_token = create_access_token(identity=user["id"])
-        return jsonify({"access_token": access_token, "message": "Login successful"}), 200
+
+        # Return user details along with the token
+        return jsonify({
+            "message": "Login successful",
+            "user": {
+                "id": user["id"],
+                "name": user["name"],
+                "email": user["email"]
+            },
+            "token": access_token  # Provide the actual JWT token here
+        }), 200
     else:
         return jsonify({"error": "Invalid credentials"}), 401
+    
+    
+@app.route('/api/logout')
+def logout():
+    session.clear()  # Clear all session data
+    return redirect(url_for('signup')) 
 
 
 

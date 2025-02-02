@@ -1,11 +1,31 @@
+import { useEffect, useState } from "react";
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 export function Dashboard() {
-  const location = useLocation();
-  const userDetails = location.state?.userDetails;
+  const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState(null);
 
-  console.log(userDetails);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      navigate("/signup"); // Redirect to signup if not logged in
+    } else {
+      setUserDetails(user);
+    }
+  }, []);
+
+
+  const handleLogout = () => {
+    // Remove token or session data from localStorage or cookies
+    localStorage.removeItem('user');
+    // Or if you're using cookies:
+
+    navigate("/signup");
+  };
+
+
 
   return (
     <div className="flex h-screen">
@@ -41,17 +61,13 @@ export function Dashboard() {
               </a>
             </li>
             <li>
-              <a
-                href="#"
-                className="block p-2 rounded hover:bg-gray-700 transition"
-              >
-                Logout
-              </a>
+
+              <button className="block p-2 rounded hover:bg-gray-700 transition" onClick={handleLogout}>Logout</button>
+
             </li>
           </ul>
         </nav>
         <footer className="p-4 text-center text-sm border-t border-gray-700">
-          &copy; 2025 Your Company
         </footer>
       </aside>
 
